@@ -1,16 +1,17 @@
 import React, { useContext, useEffect, useState } from 'react'
-
 import assets from '../assets/assets'
-// import { onAuthStateChanged } from 'firebase/auth';
-// import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
-// import upload from '../../lib/upload';
-// import { AppContext } from '../../context/appContext';
+import { AuthContext } from '../../context/AuthContext';
+
+
 const ProfileUpdate = () => {
+
+  const {authUser, UpdateProfile} = useContext(AuthContext)
+
   const navigate = useNavigate();
   const [selectedimage, setSelectedImage] = useState(null);
-  const [name, setName] = useState("");
-  const [bio, setBio] = useState("Hi everyone I am using quick chat");
+  const [name, setName] = useState(authUser?.username || "");
+  const [bio, setBio] = useState(authUser?.bio || "");
   // const [uid, setUid] = useState("");
   // const [prevImage, setPrevImage] = useState("");
   // const {setUserData} = useContext();
@@ -18,7 +19,18 @@ const ProfileUpdate = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    navigate('/')
+    if(!selectedimage){
+      await UpdateProfile({username: name, bio});
+      navigate('/')
+      return;
+    }
+    const reader = new FileReader();
+    reader.readAsDataURL(selectedimage);
+    reader.onload = async ()=>{
+      const base64Image = reader.result;
+      await UpdateProfile({profilePic : base64Image, username: name, bio})
+      navigate('/');
+    }
   }
   //   try {
   //     if (!prevImage && image) {
@@ -92,7 +104,7 @@ const ProfileUpdate = () => {
           <button type='submit' className='bg-gradient-to-r from-purple-400 to-violet-600 text-white p-2 rounded-full text-lg cursor-pointer'>Save</button>
         </form>
 
-        <img className='max-w-44 aspect-square rounded-full mx-10 max-sm"mt-10' src={assets.logo_icon} alt='' />
+        <img className={`max-w-44 aspect-square rounded-full mx-10 max-sm"mt-10 ${selectedimage && 'rounded-full'}`} src={ authUser?.profilePic||assets.logo_icon} alt='' />
       </div>
     </div>
   )

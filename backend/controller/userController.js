@@ -6,14 +6,14 @@ const cloudinary = require("cloudinary");
 
 const signUp = async(req,res)=>{
     try{
-    const {email,username,password} = req.body;
-    if(!email || !username || !password){
-        res.status(400).json("all credentials are required");
+    const {email,username,password,bio} = req.body;
+    if(!email || !username || !password || !bio){
+        return res.status(400).json({success:false, message:"all credentials are required"});
     }
 
     const isAvailable = await User.findOne({email});
     if(isAvailable){
-        res.status(400).json("user is already registered");
+        return res.status(400).json({success:false, message:"user is already registered"});
     }
 
     const hashedPassword = await bcrypt.hash(password,10);
@@ -25,17 +25,15 @@ const signUp = async(req,res)=>{
     })
 
     if(user){
-        res.status(200).json({_id:user.id, email:user.email});
+        return res.status(200).json({success:true, message:"Successfully Registered!", userData:{_id:user.id, email:user.email, username:user.username}});
     }
     else{
-        res.status(400);
-        throw new Error("users data is not valid");
+        return res.status(400).json({success:false, message:"users data is not valid"});
     }
-    res.json({message:"Successfully Registered!"});
     }
     catch(err){
         console.log(err);
-        res.json({message:err.message});
+        return res.status(400).json({success:false, message:err.message});
     }
 }
 
@@ -47,8 +45,7 @@ const login = async(req,res)=>{
     try{
     const {email,password} = req.body;
     if(!email || !password){
-        res.status(400);
-        throw new Error("both email and password are required!");
+        return res.status(400).json({success:false, message:"both email and password are required!"});
     }
 
     const exists = await User.findOne({email});
@@ -64,22 +61,21 @@ const login = async(req,res)=>{
             {expiresIn:"15m"}
         );
         
-        res.status(200).json({token:accesstoken,message: "user is successfully loggined"});
+        return res.status(200).json({success:true, token:accesstoken, userData:{_id:exists.id, email:exists.email, username:exists.username}, message: "user is successfully logged in"});
     }
     else{
-        res.status(400);
-        throw new Error("email or password is not valid");
+        return res.status(400).json({success:false, message:"email or password is not valid"});
     }
     }
     catch(err){
         console.log(err);
-        res.json({message:err.message});
+        return res.status(400).json({success:false, message:err.message});
     }
 };
 
 //controller to check if user is authenticated
 const checkAuth = (req,res)=>{
-    res.json({user: req.user});
+    return res.json({success:true, user: req.user});
 }
 
 
@@ -98,11 +94,11 @@ const updateProfile = async (req,res)=>{
         const upload = await cloudinary.uploader.upload(profilePic);
         updatedUser = await User.findByIdAndUpdate(userId,{profilePic: upload.secure_url,bio,username},{new:true})
      }
-     res.json({sucess:true, user: updatedUser});
+     return res.json({success:true, user: updatedUser});
     } 
     catch (error) {
         console.log(error.message);
-        res.json({sucess:false, message:error.message});
+        return res.json({success:false, message:error.message});
      }
 }
 

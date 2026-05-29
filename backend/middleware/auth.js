@@ -2,30 +2,32 @@ const jwt = require("jsonwebtoken");
 const User = require("../model/schema");
 require("dotenv").config();
 
-const protectRoute = async (res,req,next)=>{
+const protectRoute = async (req,res,next)=>{
     try{
         let token;
-        const header = req.headers.authorization;
+        const header = req.headers.authorization || req.headers.token;
 
         if(header && header.startsWith('Bearer')){
             token = header.split(" ")[1];
+        } else if(header){
+            token = header;
         }
         if(!token){
-            res.status(401);
-            throw new Error("user is not authorized or token is missing");
+            return res.status(401).json({success:false, message:"user is not authorized or token is missing"});
         }
         const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_JWT);
-        const user = await User.findOne(decoded.userId).select("-password");
+        const user = await User.findOne({email: decoded.user.email}).select("-password");
         
         if(!user){
-            res.json({message: "user not found"});
+            return res.status(401).json({success:false, message: "user not found"});
         }
         req.user = user;
+        req.user_id = user._id;
         next();
     }
     catch(err){
         console.log(err);
-        res.json({message:err.message});
+        return res.status(401).json({success:false, message:err.message});
     }
 }
 

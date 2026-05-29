@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const http = require("http");
@@ -36,8 +37,7 @@ io.on("connection", (socket)=>{
     })
 })
 
-require("dotenv").config();
-const port = process.env.PORT || 5000
+const port = process.env.PORT || 4000
 connectDB();
 
 
