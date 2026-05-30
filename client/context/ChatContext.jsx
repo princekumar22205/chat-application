@@ -56,6 +56,7 @@ export const ChatProvider = ({Children})=>{
     }
 
     //**** function to subscribe to message for selected user
+    // it create a listner for message which listen to new message as the new message occur it show according to the chat has open if the message came from the same user then it update state and if not then it update the unseen messages count.
     const subscribeToMessage = async()=>{
         if(!socket) return;
         socket.on("newMessage",(newMessage)=>{
@@ -72,17 +73,27 @@ export const ChatProvider = ({Children})=>{
     }
 
     //function to unsubscribe from message
+    // it actually help in removing the listener to message so that multilple listner not exist for the same message, without it show bug like receving the same message multiple times.
     const unsubscribeFromMessage = ()=>{
         if(socket) socket.off("newMessage");
     }
 
+    //when the socket or selected user changes first it remove the existing listner then create a new one. example like the user have open the chat of rahul and then switch to aman chat as the selected user changes it remove the previous one and then create a new one for aman's chat
     useEffect(()=>{
         subscribeToMessage();
         return ()=>unsubscribeFromMessage();
     },[socket, selectedUser])
-    
-    const value = {
 
+    const value = {
+        message,
+        users,
+        selectedUser,
+        getUsers,
+        setMessages,
+        sendMessages,
+        setSelectedUser,
+        unseenMessages,
+        setUnseeenMessages
     }
 
     return(
