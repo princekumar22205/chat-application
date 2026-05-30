@@ -1,4 +1,4 @@
-import { createContext, useContext } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { AuthContext } from "./AuthContext";
 import toast from "react-hot-toast";
 
@@ -6,12 +6,12 @@ import toast from "react-hot-toast";
 
 export const ChatContext = createContext();
 
-export const ChatProvider = ({Children})=>{
+export const ChatProvider = ({children})=>{
 
     const [messages, setMessages] = useState([]); 
     const [users, setUsers] = useState([]);
     const [selectedUser, setSelectedUser] = useState(null);
-    const [unseenMessages, setUnseeenMessages] = useState({});
+    const [unseenMessages, setUnseenMessages] = useState({});
 
     const {socket,axios} = useContext(AuthContext);
 
@@ -21,10 +21,10 @@ export const ChatProvider = ({Children})=>{
             const {data} = await axios.get("/api/message/users");
             if(data.success){
                 setUsers(data.users)
-                setUnseeenMessages(data.unseenMessages)
+                setUnseenMessages(data.unseenMessages)
             }
         } catch (error) {
-            toast.error(error.messsage)
+            toast.error(error.message)
         }
     }
 
@@ -43,9 +43,9 @@ export const ChatProvider = ({Children})=>{
     //function to send message to selected user
     const sendMessages = async(messageData)=>{
         try {
-            const {data} =await axios.post(`/api/messages/send/${selectedUser._id}`,messaageData);
+            const {data} =await axios.post(`/api/messages/send/${selectedUser._id}`,messageData);
             if(data.success){
-                setMessages((prevMessage)=[...prevMessage, data.newMessage])
+                setMessages((prevMessage)=>[...prevMessage, data.newMessage])
             }
             else{
                 toast.error(data.message);
@@ -85,7 +85,7 @@ export const ChatProvider = ({Children})=>{
     },[socket, selectedUser])
 
     const value = {
-        message,
+        messages,
         users,
         selectedUser,
         getUsers,
@@ -93,7 +93,7 @@ export const ChatProvider = ({Children})=>{
         sendMessages,
         setSelectedUser,
         unseenMessages,
-        setUnseeenMessages
+        setUnseenMessages
     }
 
     return(

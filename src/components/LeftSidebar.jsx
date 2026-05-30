@@ -31,7 +31,7 @@ const LeftSidebar = ({selectedUser,setSeletedUser}) => {
           <img src={item?.profilePic || assets.avatar_icon} alt=''
           className='w-[35px] aspect-[1/1] rounded-full'/>
           <div className='flex flex-col leadign-5'>
-              <p>{item.fullName}</p>
+              <p>{item.username}</p>
               {
                 index<3
                 ?<span className='text-green-400 text-xs'>Online</span>
