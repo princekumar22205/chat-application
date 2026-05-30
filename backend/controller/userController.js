@@ -23,9 +23,20 @@ const signUp = async(req,res)=>{
         password:hashedPassword,
         bio
     })
+    const accessToken = jwt.sign(
+    {
+        user:{
+            id:user.id,
+            email:user.email,
+            username:user.username
+        }
+    },
+    process.env.ACCESS_TOKEN_JWT,
+    { expiresIn: "15m" }
+    )
 
     if(user){
-        return res.status(200).json({success:true, message:"Successfully Registered!", userData:{_id:user.id, email:user.email, username:user.username}});
+        return res.status(200).json({success:true,token:accessToken, message:"Successfully Registered!", userData:{_id:user.id, email:user.email, username:user.username}});
     }
     else{
         return res.status(400).json({success:false, message:"users data is not valid"});

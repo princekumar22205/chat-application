@@ -46,7 +46,7 @@ app.use(cors());//
 app.use(express.json({limit:"4mb"}));//limit so that max size of image is 4MB
 
 app.use('/api/auth',require("./routes/userRoutes"));
-app.use("/api/message",messageRouter);
+app.use("/api/messages",messageRouter);
 
 server.listen(port, ()=>{
     console.log(`server is running on ${port}`)
