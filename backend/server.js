@@ -1,6 +1,3 @@
-const dns = require('dns');
-dns.setDefaultResultOrder('ipv4first');
-dns.setServers(['8.8.8.8', '8.8.4.4']);
 
 require("dotenv").config();
 const express = require("express");
@@ -41,7 +38,11 @@ initSocket(server);
 //     })
 // })
 
-connectDB();
+app.use(async (req, res, next) => {
+    await connectDB();
+    next();
+});
+
 const mongoose = require("mongoose");
 
 app.get("/api/status", (req, res) => {
