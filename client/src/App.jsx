@@ -11,24 +11,10 @@ import { AuthContext } from '../context/AuthContext'
 
 function App() {
 
-  // const navigate = useNavigate();
-  // const {loadUserData} = useContext(AppContext);
-  // useEffect(()=>{
-  //   onAuthStateChanged(auth,async (user)=>{
-  //     if(user){
-  //       navigate('/chat');
-  //       console.log(user);
-  //       await loadUserData(user.uid)
-  //     }
-  //     else{
-  //       navigate('/');
-  //     }
-  //   })
-  // },[])
 
 const {authUser} = useContext(AuthContext)
   return (
-    <div className="bg-[url('./src/assets/bgImage.svg')] bg-contain">
+    <div className="bg-[url('/bgImage.svg')] bg-contain">
       <Toaster/>
       <Routes>
         <Route path='/' element={authUser ? <HomePage/> : <Navigate to="/login"/>}/>

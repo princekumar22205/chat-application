@@ -37,7 +37,6 @@ initSocket(server);
 //     })
 // })
 
-const port = process.env.PORT || 4000
 connectDB();
 
 
@@ -48,8 +47,13 @@ app.use(express.json({limit:"4mb"}));//limit so that max size of image is 4MB
 app.use('/api/auth',require("./routes/userRoutes"));
 app.use("/api/messages",messageRouter);
 
-server.listen(port, ()=>{
-    console.log(`server is running on ${port}`)
-})
+if(process.env.NODE_ENV !== "production"){
 
+    const port = process.env.PORT || 4000
+    server.listen(port, ()=>{
+        console.log(`server is running on ${port}`)
+    })
+}
+
+module.exports = server;
 // module.exports = {io,userSocketMap}
