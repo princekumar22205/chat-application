@@ -5,11 +5,11 @@ const mongoose = require("mongoose");
 const connectDB = async ()=>{
     try{
         const connect = await mongoose.connect(process.env.CONNECTION_STRING);
+        console.log("CONNECTION_STRING exists:", !!process.env.CONNECTION_STRING);
         console.log("database is connected");
     }
     catch(err){
         console.log("MongoDB Connection Error:", err.message);
-        console.log("CONNECTION_STRING exists:", !!process.env.CONNECTION_STRING);
         console.log(err);
         // process.exit(1);
     }

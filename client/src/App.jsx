@@ -1,7 +1,6 @@
 import React, { useContext, useEffect } from 'react'
 import {Navigate, Route,Routes, useNavigate} from 'react-router-dom'
 import Login from './pages/Login'
-// import Chat from './pages/Chat'
 import ProfileUpdate from './pages/ProfileUpdate'
 
 import HomePage from './pages/HomePage'
@@ -19,7 +18,6 @@ const {authUser} = useContext(AuthContext)
       <Routes>
         <Route path='/' element={authUser ? <HomePage/> : <Navigate to="/login"/>}/>
         <Route path='/login' element={!authUser ? <Login/> : <Navigate to="/"/>}/>
-        {/* <Route path='/Chat' element={<Chat/>}/> */}
         <Route path='/profileUpdate' element={authUser ? <ProfileUpdate/> : <Navigate to="/login"/>}/>
       </Routes>
     </div>
