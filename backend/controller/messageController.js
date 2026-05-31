@@ -2,7 +2,8 @@ const User= require("../model/schema");
 const Message = require("../model/message");
 const message = require("../model/message");
 const cloudinary = require("../config/cloudinary");
-const {io, userSocketMap} = require("../server")
+// const {io, userSocketMap} = require("../server")
+const { getIO, userSocketMap } = require("../socket");
 
 // get all users except the logged in user 
 const getUsersForSidebar = async(req,res)=>{
@@ -35,14 +36,14 @@ const getMessage = async (req,res)=>{
         const {id:selectedUserId} = req.params;
         const myId = req.user._id;
 
-        const messages  = await Messages.find({ 
+        const messages  = await Message.find({ 
             $or:[
                 {senderId: myId, receiverId: selectedUserId},
                 {senderId: selectedUserId, receiverId: myId},
             ]
         })
-        await message.updateMany({senderId: selectedUserId, receiverId: myId},{seen: true});
-        res.json({success: true, message});
+        await Message.updateMany({senderId: selectedUserId, receiverId: myId},{seen: true});
+        res.json({success: true, messages});
 
     } catch (error) {
         console.log(error.message);
@@ -86,7 +87,8 @@ const sendMessage = async(req,res)=>{
         //Emit the new message  to the receiver's socket
         const receiverSocketId = userSocketMap[receiverId];
         if(receiverSocketId){
-            io.to(receiverSocketId).emit("newMessage", newMessage);
+            // io.to(receiverSocketId).emit("newMessage", newMessage);
+            getIO().to(receiverSocketId).emit("newMessage", newMessage);
         }
         
         res.json({success: true, newMessage});

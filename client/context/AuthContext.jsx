@@ -58,6 +58,7 @@ export const AuthProvider = ({children})=>{
         toast.success("Logged out successfully");
         socket.disconnect();
     }
+    
 
     //Update profile function to handle user profile update
     const UpdateProfile = async (body)=>{

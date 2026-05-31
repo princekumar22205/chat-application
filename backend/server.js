@@ -4,38 +4,38 @@ const cors = require("cors");
 const http = require("http");
 const connectDB = require("./config/mongodb");
 const messageRouter = require("./routes/messageRoutes");
-const {Server} = require("socket.io");
-
+// const {Server} = require("socket.io");
+const { initSocket } = require("./socket");
 //created express and http server
 const app = express();
 const server = http.createServer(app)
-
+initSocket(server);
 //intialize socket.io server
-const io =  new Server(server,{
-    cors: {origin: "*"}
-})
+// const io =  new Server(server,{
+//     cors: {origin: "*"}
+// })
 
-//store online users
-const userSocketMap = {}; //{userId : socketId}
+// //store online users
+// const userSocketMap = {}; //{userId : socketId}
 
-//Socket.io connection handler
-io.on("connection", (socket)=>{
-    const userId = socket.handshake.query.userId;
-    console.log("user connected", userId);
+// //Socket.io connection handler
+// io.on("connection", (socket)=>{
+//     const userId = socket.handshake.query.userId;
+//     console.log("user connected", userId);
 
-    if(userId){
-        userSocketMap[userId] = socket.id;
-    }
+//     if(userId){
+//         userSocketMap[userId] = socket.id;
+//     }
 
-    // emit online users to all connected clients
-    io.emit("getOnlineUsers", Object.keys(userSocketMap));
+//     // emit online users to all connected clients
+//     io.emit("getOnlineUsers", Object.keys(userSocketMap));
 
-    socket.on("disconnect", ()=>{
-        console.log("user disconnected", userId);
-        delete userSocketMap[userId];
-        io.emit("getOnlineUsers", Object.keys(userSocketMap))
-    })
-})
+//     socket.on("disconnect", ()=>{
+//         console.log("user disconnected", userId);
+//         delete userSocketMap[userId];
+//         io.emit("getOnlineUsers", Object.keys(userSocketMap))
+//     })
+// })
 
 const port = process.env.PORT || 4000
 connectDB();
@@ -52,4 +52,4 @@ server.listen(port, ()=>{
     console.log(`server is running on ${port}`)
 })
 
-module.exports = {io,userSocketMap}
+// module.exports = {io,userSocketMap}
