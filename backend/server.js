@@ -38,7 +38,15 @@ initSocket(server);
 // })
 
 connectDB();
+const mongoose = require("mongoose");
 
+app.get("/api/status", (req, res) => {
+  res.json({
+    mongoState: mongoose.connection.readyState,
+    connected: mongoose.connection.readyState === 1,
+    hasConnectionString: !!process.env.CONNECTION_STRING,
+  });
+});
 
 //middleware setup
 app.use(cors());//

@@ -3,10 +3,10 @@ dns.setServers(['8.8.8.8', '8.8.4.4']);
 const mongoose = require("mongoose");
 
 const connectDB = async ()=>{
-    const connect = await mongoose.connect(process.env.CONNECTION_STRING);
     try{
-        console.log("CONNECTION_STRING exists:", !!process.env.CONNECTION_STRING);
+        const connect = await mongoose.connect(process.env.CONNECTION_STRING);
         console.log("database is connected");
+        console.log("readyState =", mongoose.connection.readyState);
     }
     catch(err){
         console.log("MongoDB Connection Error:", err.message);
