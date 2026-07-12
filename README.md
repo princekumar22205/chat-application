@@ -74,7 +74,7 @@ CLIENT_URL=http://localhost:5173
 Start the backend:
 
 ```bash
-npm run dev
+node server.js
 ```
 
 Backend runs at:
