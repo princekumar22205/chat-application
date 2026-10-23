@@ -110,7 +110,7 @@ const updateProfile = async (req,res)=>{
     catch (error) {
         console.log(error.message);
         return res.json({success:false, message:error.message});
-     }
+    }
 }
 
 module.exports = {signUp, login, checkAuth,updateProfile};
